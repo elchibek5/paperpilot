@@ -11,16 +11,19 @@ from schemas import (
 )
 
 
+# turns one citation into a nice markdown bullet (chunk id + exact quote)
 def _cite_md(c: Citation) -> str:
     return f"- [Chunk {c.chunk_id}] \"{c.quote}\"\n"
 
 
+# builds the “Evidence” section from a list of citations (or nothing if empty)
 def _evidence_md(citations: list[Citation]) -> str:
     if not citations:
         return ""
     return "**Evidence:**\n\n" + "".join(_cite_md(c) for c in citations) + "\n"
 
 
+# converts the full paper review output into a markdown report
 def review_to_md(a: PaperAnalysis, computed_risk: int) -> str:
     """Render PaperAnalysis as Markdown."""
     lines = [
@@ -74,6 +77,7 @@ def review_to_md(a: PaperAnalysis, computed_risk: int) -> str:
     return "\n".join(lines)
 
 
+# converts the replication plan output into markdown sections
 def replication_plan_to_md(p: ReplicationPlan) -> str:
     """Render ReplicationPlan as Markdown."""
     lines = [
@@ -113,6 +117,7 @@ def replication_plan_to_md(p: ReplicationPlan) -> str:
     return "\n".join(lines)
 
 
+# combines review + replication plan into one markdown doc (plan optional)
 def combined_md(
     a: PaperAnalysis,
     computed_risk: int,
