@@ -9,6 +9,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, field_validator
 
 
+# helper config so these schemas reject any unexpected fields (keeps outputs clean)
 def _forbid_extra() -> ConfigDict:
     return ConfigDict(extra="forbid")
 
@@ -18,6 +19,7 @@ def _forbid_extra() -> ConfigDict:
 # -----------------------------------------------------------------------------
 
 
+# citation points to a specific chunk + the exact quote used
 class Citation(BaseModel):
     model_config = _forbid_extra()
 
@@ -37,6 +39,7 @@ class Citation(BaseModel):
 # -----------------------------------------------------------------------------
 
 
+# one key claim from the paper + citations backing it up
 class Claim(BaseModel):
     model_config = _forbid_extra()
 
@@ -44,6 +47,7 @@ class Claim(BaseModel):
     citations: list[Citation]
 
 
+# one result line (metric/value + explanation) + citations
 class ResultItem(BaseModel):
     model_config = _forbid_extra()
 
@@ -53,6 +57,7 @@ class ResultItem(BaseModel):
     citations: list[Citation]
 
 
+# reproducibility checklist item with status + citations
 class ChecklistItem(BaseModel):
     model_config = _forbid_extra()
 
@@ -61,6 +66,7 @@ class ChecklistItem(BaseModel):
     citations: list[Citation]
 
 
+# missing info that blocks replication, with why it matters + citations
 class MissingDetail(BaseModel):
     model_config = _forbid_extra()
 
@@ -69,6 +75,7 @@ class MissingDetail(BaseModel):
     citations: list[Citation]
 
 
+# risk breakdown item: what risk, how many points, and why + citations
 class RiskFactor(BaseModel):
     model_config = _forbid_extra()
 
@@ -79,6 +86,7 @@ class RiskFactor(BaseModel):
     citations: list[Citation]
 
 
+# suggested experiment: title + goal + step list (no citations here)
 class Experiment(BaseModel):
     model_config = _forbid_extra()
 
@@ -87,6 +95,7 @@ class Experiment(BaseModel):
     steps: list[str]
 
 
+# short method overview section + citations
 class MethodOverview(BaseModel):
     """method_overview: str with citations."""
 
@@ -101,6 +110,7 @@ class MethodOverview(BaseModel):
 # -----------------------------------------------------------------------------
 
 
+# full paper analysis output (summary, claims, results, risks, experiments, citations)
 class PaperAnalysis(BaseModel):
     model_config = _forbid_extra()
 
@@ -122,6 +132,7 @@ class PaperAnalysis(BaseModel):
 # -----------------------------------------------------------------------------
 
 
+# step-by-step replication plan output, plus citations (default empty list)
 class ReplicationPlan(BaseModel):
     model_config = _forbid_extra()
 
