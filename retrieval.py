@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
+# basic TF-IDF search: given a query, pick the most relevant text chunks
 def retrieve_chunks_tfidf(
     chunks: list[dict],
     query: str,
