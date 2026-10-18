@@ -16,6 +16,7 @@ from pdftext import MIN_PDF_CHARS, chunk_text, extract_text_from_pdf
 from retrieval import retrieve_chunks_tfidf
 from schemas import Citation, PaperAnalysis, ReplicationPlan
 from scoring import RUBRIC, RUBRIC_FACTORS, compute_risk_score_from_breakdown
+from verify import ChunkIndex, summary_line, verify_citations
 
 load_dotenv()
 
@@ -186,6 +187,34 @@ def _risk_color(score: int) -> str:
     return "#ef4444"
 
 
+def _badge(text: str, color: str) -> str:
+    return (
+        f'<div style="display:inline-block;padding:0.5rem 1rem;margin:0 0.5rem 0.5rem 0;border-radius:8px;'
+        f'background:{color}22;color:{color};border:1px solid {color};font-weight:bold;font-size:1.1rem;">'
+        f"{text}</div>"
+    )
+
+
+def _citation_color(result: dict) -> str:
+    checked = result["total"] - result["declared_missing"]
+    if not result["issues"]:
+        return "#22c55e"
+    if checked and result["verified"] / checked >= 0.8:
+        return "#eab308"
+    return "#ef4444"
+
+
+def _citation_mark(status: str, found_in: list[str], chunk_id: str) -> str:
+    if status == "verified":
+        return "✓ verified"
+    if status == "wrong_chunk":
+        where = "chunks " if len(found_in) > 1 else "chunk "
+        return f"⚠ found in {where}{', '.join(found_in)}, not chunk {chunk_id}"
+    if status == "not_found":
+        return "⚠ not found"
+    return "· marked not found in the paper"
+
+
 def render_ui():
     st.set_page_config(page_title="PaperPilot", page_icon="📄", layout="wide")
     st.title("📄 PaperPilot")
@@ -223,7 +252,23 @@ def render_ui():
     with st.status("Chunking…", state="running") as ch_status:
         raw_chunks = chunk_text(text)
         ch_status.update(label="Chunking…", state="running")
-        review_chunks = _chunks_to_review_chunks(raw_chunks)
+        # Summarizing long papers calls Gemini and is not deterministic: do it once per
+        # file, not on every rerun, so citations keep pointing at the same chunks.
+        chunks_key = (getattr(uploaded, "file_id", None) or uploaded.name, len(text))
+        if st.session_state.get("chunks_key") == chunks_key and st.session_state.chunks:
+            review_chunks = st.session_state.chunks
+        else:
+            # A different paper: drop the previous paper's review, plan and answers.
+            st.session_state.analysis = None
+            st.session_state.replication_plan = None
+            st.session_state.qa_history = []
+            try:
+                review_chunks = _chunks_to_review_chunks(raw_chunks)
+            except Exception as e:
+                ch_status.update(label="Error", state="error")
+                st.error(f"Summarizing the long paper failed: {e}")
+                return
+            st.session_state.chunks_key = chunks_key
         ch_status.update(label="Chunking done", state="complete")
     st.session_state.chunks = review_chunks
     n = len(review_chunks)
@@ -269,20 +314,31 @@ def render_ui():
     computed_risk = compute_risk_score_from_breakdown(analysis.risk_breakdown)
     risk = max(0, min(100, computed_risk))
     color = _risk_color(risk)
+    chunk_index = ChunkIndex(st.session_state.chunks or [])
+    cite_check = verify_citations(analysis, chunk_index)
+    checked = cite_check["total"] - cite_check["declared_missing"]
     st.markdown(
-        f'<div style="display:inline-block;padding:0.5rem 1rem;border-radius:8px;'
-        f'background:{color}22;color:{color};border:1px solid {color};font-weight:bold;font-size:1.1rem;">'
-        f'Risk score: {risk}/100 (computed from rubric)</div>',
+        _badge(f"Risk score: {risk}/100 (computed from rubric)", color)
+        + _badge(f"Citations: {cite_check['verified']}/{checked} quotes verified", _citation_color(cite_check)),
         unsafe_allow_html=True,
     )
+    notes = [summary_line(cite_check) + "."]
+    if cite_check["issues"]:
+        notes.append("Quotes marked ⚠ were not found in the chunk they cite.")
+    if len(raw_chunks) > MAX_CHUNKS:
+        notes.append("Checked against the summarized chunks the model saw, not the original PDF text.")
+    st.caption(" ".join(notes))
     st.markdown("---")
 
     def _evidence_expander(label: str, citations: list) -> None:
         if not citations:
             return
+        checks = [chunk_index.classify(c.chunk_id, c.quote) for c in citations]
+        if any(status in ("wrong_chunk", "not_found") for status, _ in checks):
+            label += " ⚠"
         with st.expander(label, expanded=False):
-            for c in citations:
-                st.caption(f'[Chunk {c.chunk_id}] "{c.quote}"')
+            for c, (status, found_in) in zip(citations, checks):
+                st.caption(f'{_citation_mark(status, found_in, c.chunk_id)} — [Chunk {c.chunk_id}] "{c.quote}"')
 
     t1, t2, t3, t4, t5, t6, t7, t8, t9 = st.tabs([
         "Summary", "Main claims", "Method", "Results", "Reproducibility",
@@ -331,7 +387,8 @@ def render_ui():
                 st.markdown(f"  - {step}")
     with t9:
         for cit in analysis.citations:
-            st.markdown(f"**Chunk {cit.chunk_id}:** \"{cit.quote}\"")
+            status, found_in = chunk_index.classify(cit.chunk_id, cit.quote)
+            st.markdown(f"**Chunk {cit.chunk_id}:** \"{cit.quote}\" — {_citation_mark(status, found_in, cit.chunk_id)}")
 
     with st.expander("Debug: Show chunks", expanded=False):
         for c in st.session_state.chunks or []:
@@ -381,10 +438,11 @@ def render_ui():
         st.markdown("### Risks and mitigations")
         for x in plan.risks_and_mitigations:
             st.markdown(f"- {x}")
-        md = combined_md(analysis, computed_risk, plan)
+        plan_check = verify_citations({"review": analysis.model_dump(), "plan": plan.model_dump()}, chunk_index)
+        md = combined_md(analysis, computed_risk, plan, summary_line(plan_check))
         st.download_button("Download as Markdown", md, file_name="paperpilot_review_and_plan.md", mime="text/markdown", key="dl_md_full")
     else:
-        md = combined_md(analysis, computed_risk, None)
+        md = combined_md(analysis, computed_risk, None, summary_line(cite_check))
         st.download_button("Download Review as Markdown", md, file_name="paperpilot_review.md", mime="text/markdown", key="dl_md_review")
 
     st.markdown("---")

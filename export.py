@@ -24,13 +24,17 @@ def _evidence_md(citations: list[Citation]) -> str:
 
 
 # converts the full paper review output into a markdown report
-def review_to_md(a: PaperAnalysis, computed_risk: int) -> str:
-    """Render PaperAnalysis as Markdown."""
+def review_to_md(a: PaperAnalysis, computed_risk: int, citation_check: str | None = None) -> str:
+    """Render PaperAnalysis as Markdown. citation_check: one line from verify.summary_line."""
     lines = [
         "# Paper Review",
         "",
         f"**Risk score (computed):** {computed_risk}/100",
         "",
+    ]
+    if citation_check:
+        lines.extend([f"**Citation check:** {citation_check}", ""])
+    lines += [
         "## Summary",
         "",
         a.paper_summary,
@@ -122,9 +126,10 @@ def combined_md(
     a: PaperAnalysis,
     computed_risk: int,
     plan: ReplicationPlan | None,
+    citation_check: str | None = None,
 ) -> str:
     """Single Markdown: Review + Replication Plan."""
-    out = review_to_md(a, computed_risk)
+    out = review_to_md(a, computed_risk, citation_check)
     if plan:
         out += "\n\n---\n\n" + replication_plan_to_md(plan)
     return out
