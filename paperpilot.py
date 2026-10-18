@@ -5,8 +5,6 @@ PaperPilot — Extract, chunk, and analyze PDF research papers with Gemini.
 from __future__ import annotations
 
 import json
-from io import BytesIO
-from typing import Any
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -14,95 +12,16 @@ from pydantic import ValidationError
 
 from export import combined_md
 from llm import generate_json, generate_text, _get_api_key
+from pdftext import MIN_PDF_CHARS, chunk_text, extract_text_from_pdf
 from retrieval import retrieve_chunks_tfidf
 from schemas import Citation, PaperAnalysis, ReplicationPlan
 from scoring import RUBRIC, RUBRIC_FACTORS, compute_risk_score_from_breakdown
 
 load_dotenv()
 
-MIN_PDF_CHARS = 1500
 MAX_CHUNKS = 40
 SUMMARIZE_BATCH_SIZE = 10
 DEBUG_CHUNK_PREVIEW = 300
-
-# -----------------------------------------------------------------------------
-# PDF extraction (pdfplumber → pypdf fallback)
-# -----------------------------------------------------------------------------
-
-def extract_text_from_pdf(file: BytesIO) -> str:
-    raw = file.read()
-    file.seek(0)
-
-    try:
-        import pdfplumber
-        with pdfplumber.open(BytesIO(raw)) as pdf:
-            parts = []
-            for page in pdf.pages:
-                t = page.extract_text()
-                if t:
-                    parts.append(t)
-            if not parts:
-                raise ValueError("pdfplumber extracted no text")
-            return "\n\n".join(parts)
-    except Exception:
-        pass
-
-    from pypdf import PdfReader
-    reader = PdfReader(BytesIO(raw))
-    parts = []
-    for p in reader.pages:
-        t = p.extract_text()
-        if t:
-            parts.append(t)
-    if not parts:
-        raise ValueError("Could not extract any text from PDF (pdfplumber and pypdf)")
-    return "\n\n".join(parts)
-
-
-# -----------------------------------------------------------------------------
-# Chunking (~800–1200 tokens, overlap)
-# -----------------------------------------------------------------------------
-
-CHARS_PER_TOKEN = 4
-TARGET_TOKENS = 1000
-MIN_TOKENS = 800
-MAX_TOKENS = 1200
-OVERLAP_TOKENS = 200
-
-
-def _approx_tokens(s: str) -> int:
-    return max(1, len(s) // CHARS_PER_TOKEN)
-
-
-def chunk_text(text: str) -> list[dict[str, Any]]:
-    target_chars = TARGET_TOKENS * CHARS_PER_TOKEN
-    overlap_chars = OVERLAP_TOKENS * CHARS_PER_TOKEN
-
-    chunks = []
-    start = 0
-    chunk_id = 0
-
-    while start < len(text):
-        end = min(start + target_chars, len(text))
-        if end < len(text):
-            last_space = text.rfind(" ", start, end + 1)
-            if last_space > start:
-                end = last_space + 1
-        chunk_text_slice = text[start:end].strip()
-        if chunk_text_slice:
-            chunks.append({
-                "chunk_id": chunk_id,
-                "text": chunk_text_slice,
-                "approx_tokens": _approx_tokens(chunk_text_slice),
-            })
-            chunk_id += 1
-        start = end
-        if start >= len(text):
-            break
-        start = max(0, start - overlap_chars)
-
-    return chunks
-
 
 # -----------------------------------------------------------------------------
 # Chunk cap + 2-step summarization
@@ -131,7 +50,7 @@ def _chunks_to_review_chunks(chunks: list[dict]) -> list[dict]:
     for idx, batch in enumerate(batches):
         texts = [c["text"] for c in batch]
         summary = _summarize_batch(texts)
-        out.append({"chunk_id": idx, "text": summary, "approx_tokens": 0})
+        out.append({"chunk_id": str(idx), "text": summary, "approx_tokens": 0})
     return out
 
 
