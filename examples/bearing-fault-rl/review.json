@@ -1,0 +1,381 @@
+{
+  "paper_summary": "The paper compares supervised feedforward networks (a standard ANN and an ANN trained with a reward-based loss) with Deep Q-Network (DQN) classifiers for bearing fault diagnosis on the University of Ottawa UORED vibration dataset, split 80/20 into training and test data. Every model is trained on two input representations: 1000-point raw-signal windows with 50% overlap, and vectors of statistical features such as mean, RMS and kurtosis. On raw windows the standard DQN reaches only 33.06% accuracy after close to 11 hours of training, while a timestep-based DQN with a replay buffer reaches 62.57%, near the ANN's 67.45%. On statistical features the DQN reaches 73.33% against 70.00% for the ANN, and 78.33% with a reward matrix tuned by trial and error. The paper does not report repeated runs, seeds, hardware or code.",
+  "main_claims": [
+    {
+      "claim": "RL models can match the performance of supervised learning models for bearing fault classification under controlled conditions.",
+      "citations": [
+        {"chunk_id": "0", "quote": "models developed in this study can match the performance of"},
+        {"chunk_id": "0", "quote": "traditional supervised learning models under controlled"}
+      ]
+    },
+    {
+      "claim": "With statistical feature vectors, the DQN beats the ANN by about 4% on all metrics, and by about 8% with the tailored reward matrix.",
+      "citations": [
+        {"chunk_id": "4", "quote": "increase of about 4% on all evaluation metrics for the DQN"},
+        {"chunk_id": "4", "quote": "with the updated reward mechanism, with about 8% difference"}
+      ]
+    },
+    {
+      "claim": "On raw-signal windows the standard DQN performs very poorly despite close to 11 hours of training, while the alternative timestep-based DQN performs as well as the supervised models.",
+      "citations": [
+        {"chunk_id": "3", "quote": "very poorly even with its immense training time, which is close"},
+        {"chunk_id": "3", "quote": "to create a decent policy and performed as well as the SL models."}
+      ]
+    },
+    {
+      "claim": "Reward functions make RL more flexible than class weights in supervised models, because a reward or penalty can be attached to any action.",
+      "citations": [
+        {"chunk_id": "4", "quote": "models are more versatile as rewards or penalties can be applied"}
+      ]
+    },
+    {
+      "claim": "RL models are computationally more demanding, especially on high-dimensional raw windows.",
+      "citations": [
+        {"chunk_id": "0", "quote": "demands highlight areas for further improvement."},
+        {"chunk_id": "5", "quote": "input, leading to longer training times and lower performance"}
+      ]
+    }
+  ],
+  "method_overview": {
+    "overview": "Four model types are compared: a standard feedforward ANN, an ANN with a reward-based loss, a DQN, and an alternative DQN trained over timesteps with a replay buffer. The networks share the architecture of Table II (fully connected input layer to 128 units, a 128-unit hidden layer, an output layer over the classes), except the alternative DQN, which the paper says has a different architecture. Inputs are either raw vibration windows of 1000 points with 50% overlap or statistical feature vectors. Models 1-4 use windows and models 5-8 use feature vectors; model 8 adds a hand-designed reward matrix.",
+    "citations": [
+      {"chunk_id": "2", "quote": "feedforward ANN that represents a standard SL model, a"},
+      {"chunk_id": "2", "quote": "reward-based loss function, and two types of Deep Q-Networks"},
+      {"chunk_id": "1", "quote": "Input Fully Num_features 128 ReLU"},
+      {"chunk_id": "2", "quote": "vibration data is divided into fixed-length windows of 1000 data"},
+      {"chunk_id": "3", "quote": "kurtosis, crest factor, shape factor, impulse factor, margin factor,"},
+      {"chunk_id": "3", "quote": "to 11 hours. Model 4, which has a different architecture, was able"}
+    ]
+  },
+  "results": [
+    {
+      "metric": "Accuracy (%), Model 1: ANN, raw windows",
+      "value": "67.45",
+      "description": "Best of the window-based models; precision, recall and F1 all 0.67.",
+      "citations": [{"chunk_id": "3", "quote": "Model 1: ANN 67.45 0.67 0.67 0.67 6m 17.3s"}]
+    },
+    {
+      "metric": "Accuracy (%), Model 2: modified ANN, raw windows",
+      "value": "66.24",
+      "description": "ANN with reward-based training on windows.",
+      "citations": [{"chunk_id": "3", "quote": "66.24 0.64 0.66 0.65 6m 28.7s"}]
+    },
+    {
+      "metric": "Accuracy (%), Model 3: DQN, raw windows",
+      "value": "33.06",
+      "description": "Standard DQN on windows; F1 0.20.",
+      "citations": [{"chunk_id": "3", "quote": "Model 3: DQN 33.06 0.29 0.33 0.20"}]
+    },
+    {
+      "metric": "Training time, Model 3: DQN, raw windows",
+      "value": "close to 11 hours",
+      "description": "The text gives the DQN's training time on windows as close to 11 hours.",
+      "citations": [{"chunk_id": "3", "quote": "to 11 hours. Model 4, which has a different architecture, was able"}]
+    },
+    {
+      "metric": "Accuracy (%), Model 4: alternative DQN, raw windows",
+      "value": "62.57",
+      "description": "Timestep-based DQN with a replay buffer, trained for 160,000 timesteps.",
+      "citations": [
+        {"chunk_id": "3", "quote": "Alternative 62.57 0.62 0.64 0.63"},
+        {"chunk_id": "3", "quote": "160,000 timesteps, enables the DQN to sample from diverse"}
+      ]
+    },
+    {
+      "metric": "Accuracy (%), Model 5: ANN, statistical features",
+      "value": "70.00",
+      "description": "Supervised baseline on feature vectors.",
+      "citations": [{"chunk_id": "4", "quote": "Model 5: ANN 70.00 0.69 0.70 0.70 2.5s"}]
+    },
+    {
+      "metric": "Accuracy (%), Model 6: modified ANN, statistical features",
+      "value": "71.67",
+      "description": "ANN with reward-based training on feature vectors.",
+      "citations": [{"chunk_id": "4", "quote": "71.67 0.72 0.72 0.72"}]
+    },
+    {
+      "metric": "Accuracy (%), Model 7: DQN, statistical features",
+      "value": "73.33",
+      "description": "Standard DQN on feature vectors.",
+      "citations": [{"chunk_id": "4", "quote": "Model 7: DQN 73.33 0.74 0.73 0.74 5m 2.0s"}]
+    },
+    {
+      "metric": "Accuracy (%), Model 8: DQN with different rewards, statistical features",
+      "value": "78.33",
+      "description": "Best result in the paper, using the reward matrix of Table VI.",
+      "citations": [{"chunk_id": "4", "quote": "with different 78.33 0.79 0.78 0.77"}]
+    }
+  ],
+  "reproducibility_checklist": [
+    {
+      "item": "Dataset named, described and cited with a DOI",
+      "status": "present",
+      "citations": [
+        {"chunk_id": "2", "quote": "UORED dataset [10], which was split into 80% training and 20%"},
+        {"chunk_id": "2", "quote": "UORED 2023 42 420,000 Natural FAFNIR"},
+        {"chunk_id": "5", "quote": "Apr. 04, 2023. doi: 10.17632/65d7pmfzvx."}
+      ]
+    },
+    {
+      "item": "Train/test split ratio",
+      "status": "present",
+      "citations": [{"chunk_id": "2", "quote": "UORED dataset [10], which was split into 80% training and 20%"}]
+    },
+    {
+      "item": "How the split was made (random over windows or by recording) and a validation set",
+      "status": "missing",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    },
+    {
+      "item": "Window length and overlap",
+      "status": "present",
+      "citations": [
+        {"chunk_id": "2", "quote": "vibration data is divided into fixed-length windows of 1000 data"},
+        {"chunk_id": "2", "quote": "50% overlap between consecutive windows"}
+      ]
+    },
+    {
+      "item": "Statistical features and the segment length they are computed over",
+      "status": "unclear",
+      "citations": [
+        {"chunk_id": "3", "quote": "mean, standard deviation, peak-to-peak, RMS, skewness,"},
+        {"chunk_id": "3", "quote": "each data file or parts of the data files."}
+      ]
+    },
+    {
+      "item": "Network architecture",
+      "status": "present",
+      "citations": [
+        {"chunk_id": "1", "quote": "Input Fully Num_features 128 ReLU"},
+        {"chunk_id": "1", "quote": "Hidden Fully 128 128 ReLU"}
+      ]
+    },
+    {
+      "item": "Optimizer and core hyperparameters",
+      "status": "present",
+      "citations": [
+        {"chunk_id": "2", "quote": "Learning rate 0.001"},
+        {"chunk_id": "2", "quote": "Discount factor 0.99"},
+        {"chunk_id": "2", "quote": "Decay rate 0.995"}
+      ]
+    },
+    {
+      "item": "Training length (epochs, episodes) for each model",
+      "status": "unclear",
+      "citations": [{"chunk_id": "3", "quote": "160,000 timesteps, enables the DQN to sample from diverse"}]
+    },
+    {
+      "item": "DQN details: replay buffer size, target network, minimum epsilon",
+      "status": "missing",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    },
+    {
+      "item": "Reward matrix for the tailored DQN",
+      "status": "present",
+      "citations": [{"chunk_id": "4", "quote": "Developing fault +1 -1.2 -1"}]
+    },
+    {
+      "item": "Reward definitions for the default DQN and the reward-based ANN loss",
+      "status": "missing",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    },
+    {
+      "item": "Random seeds, repeated runs, variance",
+      "status": "missing",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    },
+    {
+      "item": "Hardware used for the reported training times",
+      "status": "missing",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    },
+    {
+      "item": "Code release",
+      "status": "missing",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    },
+    {
+      "item": "Averaging used for precision, recall and F1 (macro or weighted)",
+      "status": "missing",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    }
+  ],
+  "missing_details": [
+    {
+      "detail": "How the 80/20 split was drawn: randomly over windows or by recording/file",
+      "impact": "Windows overlap by 50%, so a random split puts overlapping halves of the same signal in training and test data and can inflate test accuracy. A replication cannot tell which split to use.",
+      "citations": [
+        {"chunk_id": "2", "quote": "UORED dataset [10], which was split into 80% training and 20%"},
+        {"chunk_id": "2", "quote": "50% overlap between consecutive windows"}
+      ]
+    },
+    {
+      "detail": "A validation set for choosing hyperparameters and the reward matrix",
+      "impact": "Hyperparameters and the reward matrix were found by trial and error with only a train/test split described, so the reported test scores, including the 78.33% headline, may be tuned on the test data.",
+      "citations": [
+        {"chunk_id": "2", "quote": "achieved by trial and error in the pursuit of optimization."},
+        {"chunk_id": "2", "quote": "samples, and it is achieved by trial and error."}
+      ]
+    },
+    {
+      "detail": "Number of epochs for the epoch-trained models and episodes for the DQNs",
+      "impact": "Training length drives both accuracy and the reported training times; only model 4's 160,000 timesteps are given.",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    },
+    {
+      "detail": "DQN internals: replay buffer size, target network use and update rate, minimum epsilon, loss",
+      "impact": "DQN results are sensitive to these settings; without them the 33.06% and 73.33% DQN results cannot be rebuilt faithfully.",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    },
+    {
+      "detail": "The reward used by the default DQN and the reward-based loss of the modified ANN",
+      "impact": "Models 2, 3, 6 and 7 depend on these definitions, but only the tailored reward matrix of model 8 is given.",
+      "citations": [{"chunk_id": "2", "quote": "modified ANN with reward-based training that incorporates a"}]
+    },
+    {
+      "detail": "Segment length used to compute the statistical feature vectors, and how many vectors result",
+      "impact": "Models 5-8, including the best result, are trained on these vectors; the text only says features are computed per file or per part of a file.",
+      "citations": [{"chunk_id": "3", "quote": "each data file or parts of the data files."}]
+    },
+    {
+      "detail": "Which UORED files were used",
+      "impact": "The cited Mendeley record is the spectrogram release, while the method works on raw vibration signals, so a reader may download the wrong data.",
+      "citations": [
+        {"chunk_id": "5", "quote": "conditions – Spectrograms (UORED-VAFCLS-P1) - Mendeley Data."},
+        {"chunk_id": "2", "quote": "vibration data is divided into fixed-length windows of 1000 data"}
+      ]
+    },
+    {
+      "detail": "Hardware, seeds and number of runs",
+      "impact": "Training times cannot be compared across machines, and the 4% and 8% gaps have no variance estimate to show they exceed run-to-run noise.",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    }
+  ],
+  "risk_score": 55,
+  "risk_breakdown": [
+    {
+      "factor": "dataset defined & access described",
+      "points": 15,
+      "status": "present",
+      "rationale": "UORED is named, described in Table I and cited with a Mendeley DOI, although the cited record is the spectrogram release.",
+      "citations": [
+        {"chunk_id": "2", "quote": "UORED 2023 42 420,000 Natural FAFNIR"},
+        {"chunk_id": "5", "quote": "Apr. 04, 2023. doi: 10.17632/65d7pmfzvx."}
+      ]
+    },
+    {
+      "factor": "train/val/test split described",
+      "points": 15,
+      "status": "unclear",
+      "rationale": "An 80/20 train/test ratio is given, but not how the split was drawn, and there is no validation set.",
+      "citations": [{"chunk_id": "2", "quote": "UORED dataset [10], which was split into 80% training and 20%"}]
+    },
+    {
+      "factor": "preprocessing/cleaning described",
+      "points": 10,
+      "status": "unclear",
+      "rationale": "Windowing is fully specified, but the segment length for the statistical features (used by the best models) is not, and normalization is not mentioned.",
+      "citations": [
+        {"chunk_id": "2", "quote": "50% overlap between consecutive windows"},
+        {"chunk_id": "3", "quote": "each data file or parts of the data files."}
+      ]
+    },
+    {
+      "factor": "hyperparameters reported",
+      "points": 10,
+      "status": "present",
+      "rationale": "Table III gives batch size, learning rate, discount factor, epsilon start and decay rate, and optimizer; epochs and replay buffer settings are missing.",
+      "citations": [
+        {"chunk_id": "2", "quote": "Batch size 64"},
+        {"chunk_id": "2", "quote": "could refine these models to perform even better. Optimizer Adam"}
+      ]
+    },
+    {
+      "factor": "compute/hardware reported",
+      "points": 10,
+      "status": "missing",
+      "rationale": "Training times are reported, but not the hardware they were measured on.",
+      "citations": [{"chunk_id": "", "quote": "Not found in provided text"}]
+    },
+    {
+      "factor": "baselines included",
+      "points": 10,
+      "status": "present",
+      "rationale": "A standard supervised ANN is the baseline for every RL model, on both input types.",
+      "citations": [{"chunk_id": "2", "quote": "feedforward ANN that represents a standard SL model, a"}]
+    },
+    {
+      "factor": "ablations included",
+      "points": 10,
+      "status": "present",
+      "rationale": "The paper varies the input representation, the DQN training scheme (model 4) and the reward matrix (model 8).",
+      "citations": [
+        {"chunk_id": "4", "quote": "additional test is done to see if there is a performance boost that"},
+        {"chunk_id": "3", "quote": "to 11 hours. Model 4, which has a different architecture, was able"}
+      ]
+    },
+    {
+      "factor": "evaluation protocol clear",
+      "points": 10,
+      "status": "unclear",
+      "rationale": "Accuracy, precision, recall and F1 on the test split are reported, but not the metric averaging, the number of runs, or whether test windows are independent of training windows.",
+      "citations": [{"chunk_id": "4", "quote": "Model 7: DQN 73.33 0.74 0.73 0.74 5m 2.0s"}]
+    },
+    {
+      "factor": "limitations discussed",
+      "points": 10,
+      "status": "unclear",
+      "rationale": "Computational cost and possibly suboptimal hyperparameters are acknowledged; the single dataset, single split and missing variance are not discussed.",
+      "citations": [
+        {"chunk_id": "0", "quote": "demands highlight areas for further improvement."},
+        {"chunk_id": "2", "quote": "These hyperparameters may not be optimal, but they are"}
+      ]
+    }
+  ],
+  "risk_reasons": [
+    "Everything is evaluated on one dataset and one train/test split; the method section mentions cross-domain evaluations, but no cross-domain results are reported.",
+    "The best result uses a reward matrix tailored to the DQN's performance on the same dataset, chosen by trial and error."
+  ],
+  "suggested_experiments": [
+    {
+      "title": "Recording-level split",
+      "goal": "Check whether overlapping windows leak between training and test data.",
+      "steps": [
+        "Split UORED by recording or bearing so that no recording contributes windows to both sets.",
+        "Retrain models 1-4 on windows and compare accuracy with Table V."
+      ]
+    },
+    {
+      "title": "Seeds and variance",
+      "goal": "Find out whether the 4% and 8% DQN gains exceed run-to-run noise.",
+      "steps": [
+        "Train models 5-8 with five seeds each.",
+        "Report mean and standard deviation of accuracy and F1, and a significance test for DQN against ANN."
+      ]
+    },
+    {
+      "title": "Reward matrix against class weights",
+      "goal": "Test whether the tailored reward helps beyond what a class-weighted supervised loss gives.",
+      "steps": [
+        "Hold out a validation split and tune the reward matrix and ANN class weights on it.",
+        "Compare model 8 with an ANN trained with the tuned class weights on the untouched test split."
+      ]
+    },
+    {
+      "title": "Cross-domain test",
+      "goal": "Measure the adaptability the paper attributes to RL.",
+      "steps": [
+        "Train on one UORED operating condition or bearing and test on another.",
+        "Compare the drop in accuracy for the ANN and the DQN."
+      ]
+    }
+  ],
+  "citations": [
+    {"chunk_id": "2", "quote": "UORED dataset [10], which was split into 80% training and 20%"},
+    {"chunk_id": "2", "quote": "50% overlap between consecutive windows"},
+    {"chunk_id": "4", "quote": "with different 78.33 0.79 0.78 0.77"},
+    {"chunk_id": "4", "quote": "increase of about 4% on all evaluation metrics for the DQN"},
+    {"chunk_id": "4", "quote": "performance of the DQN with the UORED dataset outperformed"},
+    {"chunk_id": "3", "quote": "Model 3: DQN 33.06 0.29 0.33 0.20"}
+  ]
+}

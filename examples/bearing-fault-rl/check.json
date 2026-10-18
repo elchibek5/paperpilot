@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "strict": true,
+  "schema_valid": true,
+  "schema_errors": [],
+  "model_risk_score": 55,
+  "computed_risk_score": 55,
+  "rubric": {
+    "missing_factors": [],
+    "unknown_factors": [],
+    "duplicate_factors": [],
+    "points_mismatch": []
+  },
+  "citations": {
+    "total": 78,
+    "verified": 67,
+    "wrong_chunk": 0,
+    "not_found": 0,
+    "declared_missing": 11,
+    "issues": []
+  },
+  "evidence": [],
+  "summary": "67/67 quotes verified against the paper text; 11 marked not found in the paper"
+}
