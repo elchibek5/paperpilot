@@ -6,8 +6,8 @@ from __future__ import annotations
 
 import json
 
-from schemas import PaperAnalysis
-from scoring import RUBRIC_FACTORS
+from .schemas import PaperAnalysis
+from .scoring import RUBRIC_FACTORS
 
 # -----------------------------------------------------------------------------
 # Analysis schema and prompt (citations everywhere, not-found rule, rubric)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from schemas import Citation, Claim, PaperAnalysis
-from verify import NOT_FOUND_TEXT, ChunkIndex, normalize, summary_line, verify_citations
+from paperpilot.schemas import Citation, Claim, PaperAnalysis
+from paperpilot.verify import NOT_FOUND_TEXT, ChunkIndex, normalize, summary_line, verify_citations
 
 CHUNKS = [
     {"chunk_id": "0", "text": "We study the reproduc-\n ibility of deep networks.\nOur “model” uses a 3–4 layer MLP."},

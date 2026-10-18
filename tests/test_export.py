@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from export import combined_md, review_to_md
-from schemas import PaperAnalysis, ReplicationPlan
+from paperpilot.export import combined_md, review_to_md
+from paperpilot.schemas import PaperAnalysis, ReplicationPlan
 
 MINIMAL = {
     "paper_summary": "A summary.",

@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 from conftest import LONG_LINES
 
-import cli
-from scoring import RUBRIC
+from paperpilot import cli
+from paperpilot.scoring import RUBRIC
 
 FIX = Path(__file__).parent / "fixtures"
 CHUNKS = str(FIX / "chunks.json")
@@ -172,7 +172,7 @@ def test_export_rejects_an_invalid_review(capsys):
 
 
 def test_review_uses_gemini_and_writes_the_computed_score(capsys, monkeypatch):
-    import llm
+    from paperpilot import llm
 
     canned = json.loads((FIX / "review_valid.json").read_text())
     canned["risk_score"] = 0
@@ -192,6 +192,17 @@ def test_review_without_a_key_is_a_clear_error(capsys, monkeypatch, tmp_path):
     code, out, err = run(capsys, "review", CHUNKS)
     assert code == 1 and out == ""
     assert "GEMINI_API_KEY" in err
+
+
+def test_python_dash_m_runs_the_cli():
+    import subprocess
+    import sys
+
+    from paperpilot import __version__
+
+    out = subprocess.run([sys.executable, "-m", "paperpilot", "--version"], cwd=FIX.parent.parent,
+                         capture_output=True, text=True, check=True)
+    assert out.stdout.strip() == f"paperpilot {__version__}"
 
 
 @pytest.mark.parametrize("argv", [["search", "missing.json", "q"], ["check", "missing.json", "--chunks", CHUNKS]])

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from schemas import RiskFactor
-from scoring import RUBRIC, compute_risk_score_from_breakdown
+from paperpilot.schemas import RiskFactor
+from paperpilot.scoring import RUBRIC, compute_risk_score_from_breakdown
 
 
 def _f(factor, status="present"):

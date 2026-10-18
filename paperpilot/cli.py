@@ -18,12 +18,13 @@ from typing import Any
 
 from pydantic import ValidationError
 
-from export import combined_md
-from pdftext import MIN_PDF_CHARS, NoTextError, chunk_text, extract_text_from_pdf
-from retrieval import rank_chunks_tfidf
-from schemas import PaperAnalysis, ReplicationPlan
-from scoring import RUBRIC, RUBRIC_FACTORS, compute_risk_score_from_breakdown
-from verify import NOT_FOUND_TEXT, ChunkIndex, summary_line, verify_citations
+from . import __version__
+from .export import combined_md
+from .pdftext import MIN_PDF_CHARS, NoTextError, chunk_text, extract_text_from_pdf
+from .retrieval import rank_chunks_tfidf
+from .schemas import PaperAnalysis, ReplicationPlan
+from .scoring import RUBRIC, RUBRIC_FACTORS, compute_risk_score_from_breakdown
+from .verify import NOT_FOUND_TEXT, ChunkIndex, summary_line, verify_citations
 
 EXIT_OK = 0
 EXIT_FAIL = 1
@@ -309,7 +310,7 @@ def _gemini(fn, *a):
 
 
 def cmd_review(args) -> int:
-    from llm import run_analysis
+    from .llm import run_analysis
 
     chunks = _load_chunks(args.chunks)
     analysis = _gemini(run_analysis, chunks)
@@ -321,7 +322,7 @@ def cmd_review(args) -> int:
 
 
 def cmd_plan(args) -> int:
-    from llm import run_replication_plan
+    from .llm import run_replication_plan
 
     chunks = _load_chunks(args.chunks)
     analysis = _validate(PaperAnalysis, _load_json(args.review, "review"), "review")
@@ -334,21 +335,12 @@ def cmd_plan(args) -> int:
 # Entry point
 # -----------------------------------------------------------------------------
 
-def _version() -> str:
-    try:
-        from importlib.metadata import version
-
-        return version("paperpilot")
-    except Exception:
-        return "unknown"
-
-
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="paperpilot",
         description="Reproducibility review for ML papers, with every quote checked against the paper text.",
     )
-    p.add_argument("--version", action="version", version=f"%(prog)s {_version()}")
+    p.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = p.add_subparsers(dest="command", required=True, metavar="COMMAND")
 
     def add(name, func, help_):
@@ -402,6 +394,3 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: {e}", file=sys.stderr)
         return e.code
 
-
-if __name__ == "__main__":
-    sys.exit(main())

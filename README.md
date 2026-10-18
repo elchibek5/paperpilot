@@ -49,7 +49,7 @@ python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env               # then set GEMINI_API_KEY in .env
-streamlit run paperpilot.py
+streamlit run app.py
 ```
 
 Get a key at [Google AI Studio](https://aistudio.google.com/apikey); `GOOGLE_API_KEY` also works. The default model is `gemini-3.8-flash`; set `PAPERPILOT_MODEL` to use another. Keys are read from the environment or `.env` only.
@@ -70,7 +70,7 @@ The same Gemini review is available from the command line: `paperpilot review ch
 | `paperpilot review chunks.json [-o review.json]` | yes | Gemini writes the review. |
 | `paperpilot plan chunks.json review.json [-o plan.json]` | yes | Gemini writes a replication plan. |
 
-Output is JSON on stdout unless `-o` is given (`export` writes Markdown). Messages go to stderr.
+Output is JSON on stdout unless `-o` is given (`export` writes Markdown). Messages go to stderr. `python -m paperpilot` runs the same commands.
 
 ## How the risk score works
 
@@ -88,7 +88,7 @@ The score runs from 100 (high risk) to 0. It starts at 100 and drops by a factor
 | evaluation protocol clear | 10 |
 | limitations discussed | 10 |
 
-The model only judges each factor (`present`, `missing` or `unclear`) and quotes its evidence. The arithmetic is done in code (`scoring.py`), so the same breakdown always gives the same score, scores are comparable across papers, and anyone can see why a paper got its number. A score the model invents cannot be checked; a breakdown with quotes can. `paperpilot check` reports the model's number next to the computed one and flags factor names that do not match the rubric, since a misspelled factor would silently stop counting.
+The model only judges each factor (`present`, `missing` or `unclear`) and quotes its evidence. The arithmetic is done in code (`paperpilot/scoring.py`), so the same breakdown always gives the same score, scores are comparable across papers, and anyone can see why a paper got its number. A score the model invents cannot be checked; a breakdown with quotes can. `paperpilot check` reports the model's number next to the computed one and flags factor names that do not match the rubric, since a misspelled factor would silently stop counting.
 
 ## Why citations are verified
 
@@ -111,7 +111,6 @@ The check proves the words are in the paper. It does not prove they support the 
 - **Retrieval** for search and Q&A is TF-IDF: it matches words, not meaning.
 - **PDF layout**: two-column papers can come out with lines from both columns interleaved, and some PDFs lose the spaces between words. The citation check ignores spacing, but quotes from interleaved text should stay within one line.
 - **Gemini**: rate limits, server errors and timeouts get one automatic retry, then an error.
-- **Install it on its own**: PaperPilot installs flat top-level modules (`cli`, `llm`, `verify`, ...), which can clash with other packages in a shared environment. Use pipx or a dedicated virtualenv.
 
 ## Development
 

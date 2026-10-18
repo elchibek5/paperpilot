@@ -10,14 +10,14 @@ import streamlit as st
 from dotenv import load_dotenv
 from pydantic import ValidationError
 
-from export import combined_md
-from llm import _get_api_key, generate_text, run_analysis, run_replication_plan
-from pdftext import MIN_PDF_CHARS, chunk_text, extract_text_from_pdf
-from prompts import build_qa_prompt, build_summary_prompt
-from retrieval import retrieve_chunks_tfidf
-from schemas import PaperAnalysis
-from scoring import RUBRIC, compute_risk_score_from_breakdown
-from verify import ChunkIndex, summary_line, verify_citations
+from paperpilot.export import combined_md
+from paperpilot.llm import _get_api_key, generate_text, run_analysis, run_replication_plan
+from paperpilot.pdftext import MIN_PDF_CHARS, chunk_text, extract_text_from_pdf
+from paperpilot.prompts import build_qa_prompt, build_summary_prompt
+from paperpilot.retrieval import retrieve_chunks_tfidf
+from paperpilot.schemas import PaperAnalysis
+from paperpilot.scoring import RUBRIC, compute_risk_score_from_breakdown
+from paperpilot.verify import ChunkIndex, summary_line, verify_citations
 
 load_dotenv()
 

@@ -4,7 +4,7 @@ Export Review + Replication Plan to a single Markdown document.
 
 from __future__ import annotations
 
-from schemas import (
+from .schemas import (
     Citation,
     PaperAnalysis,
     ReplicationPlan,

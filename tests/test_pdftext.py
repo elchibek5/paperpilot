@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from conftest import LONG_LINES
 
-from pdftext import MIN_PDF_CHARS, chunk_text, extract_text_from_pdf
+from paperpilot.pdftext import MIN_PDF_CHARS, chunk_text, extract_text_from_pdf
 
 
 def test_extract_from_path_and_file_object(make_pdf):

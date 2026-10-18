@@ -8,7 +8,7 @@ import pytest
 from google import genai
 from google.genai import errors, types
 
-import llm
+from paperpilot import llm
 
 
 class FakeModels:
