@@ -1,0 +1,8 @@
+{
+  "name": "elchibek5-paperpilot",
+  "owner": { "name": "Elchibek Dastanov" },
+  "description": "Paper review skills by Elchibek Dastanov",
+  "plugins": [
+    { "name": "paper-review", "source": "./", "description": "Reproducibility review with verified citations." }
+  ]
+}

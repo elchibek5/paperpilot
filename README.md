@@ -4,21 +4,29 @@ PaperPilot reviews ML research papers for reproducibility: it extracts the PDF t
 
 ## Use it with your coding agent (no API key)
 
-Claude Code, Codex, Cursor and similar agents can do the reading and writing themselves. PaperPilot supplies the paper text, the schema, the rubric, search, and the citation check.
+Claude Code, Codex, Cursor and similar agents can do the reading and writing themselves. PaperPilot supplies the paper text, the schema, the rubric, search, and the citation check. Install the skill for your agent, then the `paperpilot` command it drives.
+
+**Claude Code**: add the plugin from inside Claude Code.
+
+```text
+/plugin marketplace add elchibek5/PaperPilot-Gemini
+/plugin install paper-review@elchibek5-paperpilot
+```
+
+**Codex and other agents** that read skills from `~/.agents/skills`:
+
+```bash
+git clone https://github.com/elchibek5/PaperPilot-Gemini
+mkdir -p ~/.agents/skills && cp -r PaperPilot-Gemini/skills/paper-review ~/.agents/skills/
+```
+
+**Both** need the CLI:
 
 ```bash
 pipx install git+https://github.com/elchibek5/PaperPilot-Gemini
 ```
 
-Then give your agent the skill in [`skills/paper-review/SKILL.md`](skills/paper-review/SKILL.md). For Claude Code, put it in your skills folder (or in `.claude/skills/` inside a project):
-
-```bash
-mkdir -p ~/.claude/skills/paper-review
-curl -L -o ~/.claude/skills/paper-review/SKILL.md \
-  https://raw.githubusercontent.com/elchibek5/PaperPilot-Gemini/main/skills/paper-review/SKILL.md
-```
-
-Other agents can be told to follow that file. The skill runs this loop:
+Agents without skill support can be told to follow [`skills/paper-review/SKILL.md`](skills/paper-review/SKILL.md). The skill runs this loop:
 
 1. `paperpilot extract paper.pdf -o chunks.json` turns the PDF into numbered chunks.
 2. `paperpilot schema` prints the review format and the rubric.

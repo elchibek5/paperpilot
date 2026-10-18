@@ -1,6 +1,9 @@
 ---
 name: paper-review
 description: Review an ML or scientific paper PDF for reproducibility, backing every claim with a verbatim quote that PaperPilot checks against the paper text. Use when someone asks you to review, audit or judge the reproducibility of a paper PDF.
+license: MIT
+metadata:
+  source: https://github.com/elchibek5/PaperPilot-Gemini
 ---
 
 # Paper review with verified citations

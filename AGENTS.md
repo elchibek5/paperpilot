@@ -25,6 +25,7 @@ The Streamlit app is `app.py` at the repo root; it is not installed. Do not add 
 | `paperpilot/cli.py` | The `paperpilot` command (`paperpilot.cli:main`). |
 | `app.py` | The Streamlit app. |
 | `skills/paper-review/SKILL.md` | Instructions for agents that use PaperPilot without an API key. |
+| `.claude-plugin/` | Claude Code plugin and marketplace manifests that ship the skill. |
 | `examples/` | A worked review with its clean `check --strict` output. |
 | `tests/` | pytest; fixtures in `tests/fixtures/`. |
 
@@ -57,6 +58,10 @@ paperpilot extract paper.pdf -o chunks.json # CLI
 - **The default model** is `DEFAULT_MODEL` in `paperpilot/llm.py`. Check Google's models page
   (https://ai.google.dev/gemini-api/docs/models) before changing it, and update
   `.env.example` and the README.
+- **`skills/` and `.claude-plugin/` stay in sync with the CLI.** Renaming or changing a
+  `paperpilot` command or flag means updating `skills/paper-review/SKILL.md` and, if
+  the plugin's name or description changes, `.claude-plugin/plugin.json` and
+  `marketplace.json` in the same commit; run `claude plugin validate .` afterwards.
 - Never commit `.env`, PDFs, or `chunks.json` dumps. Stage files by name.
 - After changing the app, start it (`streamlit run app.py --server.headless true`)
   and check the log for tracebacks.
