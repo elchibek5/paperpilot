@@ -282,12 +282,7 @@ def render_ui():
                 analysis = run_analysis(review_chunks)
                 st.session_state.analysis = analysis
                 st.session_state.replication_plan = None
-            except ValueError as e:
-                if "API" in str(e) or "GEMINI" in str(e).upper() or "GOOGLE" in str(e).upper():
-                    rev_status.update(label="Error", state="error")
-                    st.error(str(e))
-                    return
-                raise
+            # JSONDecodeError and ValidationError are ValueErrors: catch them first.
             except json.JSONDecodeError as e:
                 rev_status.update(label="Error", state="error")
                 st.error(f"Gemini returned invalid JSON: {e}")
@@ -296,6 +291,12 @@ def render_ui():
                 rev_status.update(label="Error", state="error")
                 st.error(f"Schema validation failed: {e}")
                 return
+            except ValueError as e:
+                if "API" in str(e) or "GEMINI" in str(e).upper() or "GOOGLE" in str(e).upper():
+                    rev_status.update(label="Error", state="error")
+                    st.error(str(e))
+                    return
+                raise
             except Exception as e:
                 rev_status.update(label="Error", state="error")
                 msg = str(e).lower()
