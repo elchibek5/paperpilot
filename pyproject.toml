@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paperpilot"
+version = "0.2.0"
+description = "Reproducibility review for ML papers, with every quoted citation checked against the paper text."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Elchibek Dastanov" }]
+keywords = ["reproducibility", "machine learning", "papers", "citations", "gemini"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "pdfplumber>=0.10.0",
+    "pypdf>=3.17.0",
+    "pydantic>=2.0.0",
+    "scikit-learn>=1.3.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+gemini = ["google-genai>=1.0.0"]
+app = ["streamlit>=1.28.0"]
+
+[project.urls]
+Homepage = "https://github.com/elchibek5/PaperPilot-Gemini"
+
+[project.scripts]
+paperpilot = "cli:main"
+
+[tool.setuptools]
+py-modules = [
+    "cli",
+    "export",
+    "llm",
+    "paperpilot",
+    "pdftext",
+    "prompts",
+    "retrieval",
+    "schemas",
+    "scoring",
+    "verify",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

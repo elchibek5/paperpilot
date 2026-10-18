@@ -14,6 +14,10 @@ MIN_PDF_CHARS = 1500
 PdfSource = Union[str, "os.PathLike[str]", BinaryIO]
 
 
+class NoTextError(ValueError):
+    """The PDF has no extractable text (scanned or image-only)."""
+
+
 # -----------------------------------------------------------------------------
 # PDF extraction (pdfplumber → pypdf fallback)
 # -----------------------------------------------------------------------------
@@ -53,7 +57,7 @@ def extract_text_from_pdf(file_or_path: PdfSource) -> str:
         if t:
             parts.append(t)
     if not parts:
-        raise ValueError("Could not extract any text from PDF (pdfplumber and pypdf)")
+        raise NoTextError("Could not extract any text from PDF (pdfplumber and pypdf)")
     return "\n\n".join(parts)
 
 

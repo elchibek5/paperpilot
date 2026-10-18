@@ -1,0 +1,22 @@
+{
+  "source": "tinynet.pdf",
+  "n_chars": 715,
+  "n_chunks": 3,
+  "chunks": [
+    {
+      "chunk_id": "0",
+      "text": "We introduce TinyNet, a two-layer MLP for tabular classifica-\ntion. We evaluate on the public UCI Adult dataset, available from the UCI Machine Learning Repository. The data is split 70/15/15 into train, validation and test sets with a fixed seed.",
+      "approx_tokens": 61
+    },
+    {
+      "chunk_id": "1",
+      "text": "Inputs are standardized and rows with missing values are dropped. We train for 20 epochs with Adam, learning rate 0.001 and batch size 128 on a single NVIDIA T4 GPU. We compare against logistic regression and gradient boosted trees.",
+      "approx_tokens": 58
+    },
+    {
+      "chunk_id": "2",
+      "text": "TinyNet reaches 85.1% test accuracy versus 84.2% for gradient boosted trees. Removing the second layer lowers accuracy to 83.0%. We report accuracy on the held-out test set, averaged over five seeds. Our study is limited to one dataset.",
+      "approx_tokens": 59
+    }
+  ]
+}

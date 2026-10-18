@@ -131,3 +131,29 @@ def generate_json(prompt: str, model_name: str | None = None) -> str:
 def generate_text(prompt: str, model_name: str | None = None) -> str:
     """Freeform text generation; retry once on rate limit/timeout."""
     return _generate(prompt, model_name, json_mode=False)
+
+
+# -----------------------------------------------------------------------------
+# Review + replication plan (shared prompts, validated against the schemas)
+# -----------------------------------------------------------------------------
+
+def run_analysis(chunks: list[dict]):
+    """Send the analysis prompt and validate the JSON as a PaperAnalysis."""
+    import json
+
+    from prompts import build_analysis_prompt
+    from schemas import PaperAnalysis
+
+    raw = generate_json(build_analysis_prompt(chunks))
+    return PaperAnalysis.model_validate(json.loads(raw))
+
+
+def run_replication_plan(chunks: list[dict], analysis):
+    """Send the replication prompt and validate the JSON as a ReplicationPlan."""
+    import json
+
+    from prompts import build_replication_prompt
+    from schemas import ReplicationPlan
+
+    raw = generate_json(build_replication_prompt(chunks, analysis))
+    return ReplicationPlan.model_validate(json.loads(raw))

@@ -1,0 +1,197 @@
+{
+  "main_claims": [
+    {
+      "claim": "TinyNet beats gradient boosted trees on UCI Adult.",
+      "citations": [
+        {
+          "chunk_id": "2",
+          "quote": "TinyNet reaches 85.1% test accuracy versus 84.2% for gradient boosted trees"
+        }
+      ]
+    }
+  ],
+  "method_overview": {
+    "overview": "A two-layer MLP for tabular classification.",
+    "citations": [
+      {
+        "chunk_id": "0",
+        "quote": "a two-layer MLP for tabular classification"
+      }
+    ]
+  },
+  "results": [
+    {
+      "metric": "Test accuracy",
+      "value": "85.1%",
+      "description": "TinyNet on the UCI Adult test split.",
+      "citations": [
+        {
+          "chunk_id": "2",
+          "quote": "TinyNet reaches 85.1% test accuracy"
+        }
+      ]
+    }
+  ],
+  "reproducibility_checklist": [
+    {
+      "item": "Code released",
+      "status": "missing",
+      "citations": [
+        {
+          "chunk_id": "",
+          "quote": "Not found in provided text"
+        }
+      ]
+    },
+    {
+      "item": "Random seeds",
+      "status": "present",
+      "citations": [
+        {
+          "chunk_id": "2",
+          "quote": "averaged over five seeds"
+        }
+      ]
+    }
+  ],
+  "missing_details": [
+    {
+      "detail": "Code and exact seed values",
+      "impact": "Results cannot be rerun exactly.",
+      "citations": [
+        {
+          "chunk_id": "",
+          "quote": "Not found in provided text"
+        }
+      ]
+    }
+  ],
+  "risk_score": 10,
+  "risk_breakdown": [
+    {
+      "factor": "dataset defined & access described",
+      "points": 15,
+      "status": "maybe",
+      "rationale": "See quote.",
+      "citations": [
+        {
+          "chunk_id": "0",
+          "quote": "the public UCI Adult dataset, available from the UCI Machine Learning Repository"
+        }
+      ]
+    },
+    {
+      "factor": "train/val/test split described",
+      "points": 15,
+      "status": "present",
+      "rationale": "See quote.",
+      "citations": [
+        {
+          "chunk_id": "0",
+          "quote": "split 70/15/15 into train, validation and test sets"
+        }
+      ]
+    },
+    {
+      "factor": "preprocessing/cleaning described",
+      "points": 10,
+      "status": "present",
+      "rationale": "See quote.",
+      "citations": [
+        {
+          "chunk_id": "1",
+          "quote": "Inputs are standardized and rows with missing values are dropped"
+        }
+      ]
+    },
+    {
+      "factor": "hyperparameters reported",
+      "points": 10,
+      "status": "present",
+      "rationale": "See quote.",
+      "citations": [
+        {
+          "chunk_id": "1",
+          "quote": "learning rate 0.001 and batch size 128"
+        }
+      ]
+    },
+    {
+      "factor": "compute/hardware reported",
+      "points": 10,
+      "status": "present",
+      "rationale": "See quote.",
+      "citations": [
+        {
+          "chunk_id": "1",
+          "quote": "on a single NVIDIA T4 GPU"
+        }
+      ]
+    },
+    {
+      "factor": "baselines included",
+      "points": 10,
+      "status": "present",
+      "rationale": "See quote.",
+      "citations": [
+        {
+          "chunk_id": "1",
+          "quote": "We compare against logistic regression and gradient boosted trees"
+        }
+      ]
+    },
+    {
+      "factor": "ablations included",
+      "points": 10,
+      "status": "present",
+      "rationale": "See quote.",
+      "citations": [
+        {
+          "chunk_id": "2",
+          "quote": "Removing the second layer lowers accuracy to 83.0%"
+        }
+      ]
+    },
+    {
+      "factor": "evaluation protocol clear",
+      "points": 10,
+      "status": "present",
+      "rationale": "See quote.",
+      "citations": [
+        {
+          "chunk_id": "2",
+          "quote": "accuracy on the held-out test set, averaged over five seeds"
+        }
+      ]
+    },
+    {
+      "factor": "limitations discussed",
+      "points": 10,
+      "status": "unclear",
+      "rationale": "See quote.",
+      "citations": [
+        {
+          "chunk_id": "2",
+          "quote": "Our study is limited to one dataset"
+        }
+      ]
+    }
+  ],
+  "risk_reasons": null,
+  "suggested_experiments": [
+    {
+      "title": "Second dataset",
+      "goal": "Test generality.",
+      "steps": [
+        "Rerun on UCI Covertype."
+      ]
+    }
+  ],
+  "citations": [
+    {
+      "chunk_id": "0",
+      "quote": "We evaluate on the public UCI Adult dataset"
+    }
+  ],
+  "confidence": "high"
+}

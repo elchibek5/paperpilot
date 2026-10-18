@@ -27,12 +27,16 @@ def compute_risk_score_from_breakdown(risk_breakdown: list) -> int:
     """
     Compute risk score from Gemini risk_breakdown. Start at 100, subtract
     factor's points when status == "present". Clamp to 0–100.
+    A factor listed more than once is subtracted once.
     """
     score = 100
+    counted: set[str] = set()
     for f in risk_breakdown:
         factor = getattr(f, "factor", None) or (f.get("factor") if isinstance(f, dict) else None)
         status = getattr(f, "status", None) or (f.get("status") if isinstance(f, dict) else None)
-        pts = RUBRIC.get(str(factor).strip(), 0) if factor else 0
-        if status == "present" and pts > 0:
+        name = str(factor).strip() if factor else ""
+        pts = RUBRIC.get(name, 0)
+        if status == "present" and pts > 0 and name not in counted:
             score -= pts
+            counted.add(name)
     return max(0, min(100, score))
