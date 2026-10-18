@@ -31,7 +31,7 @@ gemini = ["google-genai>=1.0.0"]
 app = ["streamlit>=1.28.0"]
 
 [project.urls]
-Homepage = "https://github.com/elchibek5/PaperPilot-Gemini"
+Homepage = "https://github.com/elchibek5/paperpilot"
 
 [project.scripts]
 paperpilot = "paperpilot.cli:main"

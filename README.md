@@ -9,21 +9,21 @@ Claude Code, Codex, Cursor and similar agents can do the reading and writing the
 **Claude Code**: add the plugin from inside Claude Code.
 
 ```text
-/plugin marketplace add elchibek5/PaperPilot-Gemini
+/plugin marketplace add elchibek5/paperpilot
 /plugin install paper-review@elchibek5-paperpilot
 ```
 
 **Codex and other agents** that read skills from `~/.agents/skills`:
 
 ```bash
-git clone https://github.com/elchibek5/PaperPilot-Gemini
-mkdir -p ~/.agents/skills && cp -r PaperPilot-Gemini/skills/paper-review ~/.agents/skills/
+git clone https://github.com/elchibek5/paperpilot
+mkdir -p ~/.agents/skills && cp -r paperpilot/skills/paper-review ~/.agents/skills/
 ```
 
 **Both** need the CLI:
 
 ```bash
-pipx install git+https://github.com/elchibek5/PaperPilot-Gemini
+pipx install git+https://github.com/elchibek5/paperpilot
 ```
 
 Agents without skill support can be told to follow [`skills/paper-review/SKILL.md`](skills/paper-review/SKILL.md). The skill runs this loop:
@@ -51,8 +51,8 @@ check: schema ok; rubric ok; 2 item(s) without evidence; 13/15 quotes verified a
 ## Use the web app (Gemini key)
 
 ```bash
-git clone https://github.com/elchibek5/PaperPilot-Gemini
-cd PaperPilot-Gemini
+git clone https://github.com/elchibek5/paperpilot
+cd paperpilot
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt

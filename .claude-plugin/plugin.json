@@ -3,8 +3,8 @@
   "description": "Review ML and scientific papers for reproducibility with citations checked against the paper text. Uses the paperpilot CLI; no API key needed.",
   "version": "1.0.0",
   "author": { "name": "Elchibek Dastanov" },
-  "homepage": "https://github.com/elchibek5/PaperPilot-Gemini",
-  "repository": "https://github.com/elchibek5/PaperPilot-Gemini",
+  "homepage": "https://github.com/elchibek5/paperpilot",
+  "repository": "https://github.com/elchibek5/paperpilot",
   "license": "MIT",
   "keywords": ["research-papers", "reproducibility", "peer-review", "citations", "ml", "skill"]
 }
